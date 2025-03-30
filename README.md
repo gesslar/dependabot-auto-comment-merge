@@ -37,4 +37,4 @@ jobs:
 
 ## License
 
-ISC
+Unlicensed. Feel free to use this code in any way you like.
