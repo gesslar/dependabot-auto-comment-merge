@@ -1,6 +1,6 @@
 {
   "name": "dependabot-auto-comment-merge",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "GitHub Action to automatically comment @dependabot merge on open Dependabot PRs",
   "main": "index.js",
   "scripts": {
