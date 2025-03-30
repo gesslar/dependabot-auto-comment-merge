@@ -1,10 +1,10 @@
 {
   "name": "dependabot-auto-comment-merge",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "GitHub Action to automatically comment @dependabot merge on open Dependabot PRs",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js -o dist --source-map --license licenses.txt"
+    "build": "ncc build index.js -o dist"
   },
   "keywords": [
     "github",
