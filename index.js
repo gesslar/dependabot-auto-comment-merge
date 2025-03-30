@@ -1,5 +1,5 @@
-import { getInput, setFailed, info, debug } from '@actions/core';
-import { getOctokit } from '@actions/github';
+const { getInput, setFailed, info, debug } = require('@actions/core');
+const { getOctokit } = require('@actions/github');
 
 async function run() {
   try {
