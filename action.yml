@@ -1,6 +1,6 @@
 name: 'Dependabot Auto Comment Merge'
 description: 'Automatically comments @dependabot merge on open Dependabot PRs'
-author: 'Your Name'
+author: 'gesslar'
 
 inputs:
   token:
@@ -14,13 +14,17 @@ inputs:
     description: 'Comma-separated list of repositories to check. If empty, all repos of the owner will be checked.'
     required: false
     default: ''
+  ignore-repositories:
+    description: 'Comma-separated list of repositories to ignore. Useful when checking all repos but wanting to exclude a few.'
+    required: false
+    default: ''
   dry-run:
     description: 'If true, will not actually post comments'
     required: false
     default: 'false'
 
 runs:
-  using: 'node20'
+  using: 'node16'
   main: 'dist/index.js'
 
 branding:

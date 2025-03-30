@@ -7,9 +7,19 @@ const github = require('@actions/github');
     const token = core.getInput('token', { required: true });
     const repoOwner = core.getInput('repo-owner');
     const repositories = core.getInput('repositories');
+    const ignoreRepositories = core.getInput('ignore-repositories');
     const dryRun = core.getInput('dry-run').toLowerCase() === 'true';
 
     const octokit = github.getOctokit(token);
+
+    // Parse repositories to ignore
+    const ignoreRepos = ignoreRepositories
+      ? ignoreRepositories.split(',').map(repo => repo.trim())
+      : [];
+
+    if (ignoreRepos.length > 0) {
+      core.info(`Ignoring repositories: ${ignoreRepos.join(', ')}`);
+    }
 
     // Get repositories to process
     let repos = [];
@@ -32,6 +42,10 @@ const github = require('@actions/github');
       repos = response.data.map(repo => repo.name);
       core.info(`Found ${repos.length} repositories`);
     }
+
+    // Filter out ignored repositories
+    repos = repos.filter(repo => !ignoreRepos.includes(repo));
+    core.info(`After filtering ignored repos, processing ${repos.length} repositories`);
 
     // Process each repository
     for (const repo of repos) {
