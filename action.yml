@@ -1,0 +1,28 @@
+name: 'Dependabot Auto Comment Merge'
+description: 'Automatically comments @dependabot merge on open Dependabot PRs'
+author: 'Your Name'
+
+inputs:
+  token:
+    description: 'GitHub token with permissions to comment on PRs'
+    required: true
+  repo-owner:
+    description: 'Repository owner (can be an organization)'
+    required: false
+    default: ${{ github.repository_owner }}
+  repositories:
+    description: 'Comma-separated list of repositories to check. If empty, all repos of the owner will be checked.'
+    required: false
+    default: ''
+  dry-run:
+    description: 'If true, will not actually post comments'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'node16'
+  main: 'index.js'
+
+branding:
+  icon: 'git-pull-request'
+  color: 'green'
