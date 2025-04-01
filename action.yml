@@ -22,6 +22,10 @@ inputs:
     description: 'If true, will not actually post comments'
     required: false
     default: 'false'
+  merge-type:
+    description: 'The merge command to use: merge, rebase, or squash'
+    required: false
+    default: 'merge'
 
 runs:
   using: 'node16'

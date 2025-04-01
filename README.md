@@ -40,6 +40,10 @@ jobs:
           # Dry run mode - if true, will only log actions without posting comments
           # Default: false
           dry-run: ${{ vars.DEPENDABOT_DRY_RUN }}
+
+          # Merge type - controls which merge command is used: merge, rebase, or squash
+          # Default: merge
+          merge-type: merge
 ```
 
 ## Inputs
@@ -51,6 +55,7 @@ jobs:
 | `repositories` | Comma-separated list of repositories to check for Dependabot PRs. If not provided, all repositories of the owner will be checked. | No | All repos of owner |
 | `ignore-repositories` | Comma-separated list of repositories to ignore. Useful when checking all repos but wanting to exclude a few. | No | None |
 | `dry-run` | If set to "true", the action will log what it would do without actually posting comments. Useful for testing. | No | `false` |
+| `merge-type` | Specifies the merge command to use when commenting on Dependabot PRs. Valid values are: `merge`, `rebase`, or `squash`. | No | `merge` |
 
 ## License
 
