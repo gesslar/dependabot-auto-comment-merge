@@ -31837,6 +31837,13 @@ const github = __nccwpck_require__(3228);
     const repositories = core.getInput('repositories');
     const ignoreRepositories = core.getInput('ignore-repositories');
     const dryRun = core.getInput('dry-run').toLowerCase() === 'true';
+    const mergeType = core.getInput('merge-type') || 'merge';
+
+    // Validate merge type
+    const validMergeTypes = ['merge', 'rebase', 'squash'];
+    if (!validMergeTypes.includes(mergeType)) {
+      throw new Error(`Invalid merge-type: ${mergeType}. Must be one of: ${validMergeTypes.join(', ')}`);
+    }
 
     const octokit = github.getOctokit(token);
 
@@ -31898,11 +31905,11 @@ const github = __nccwpck_require__(3228);
             owner: repoOwner,
             repo: repo,
             issue_number: pr.number,
-            body: '@dependabot merge'
+            body: `@dependabot ${mergeType}`
           });
-          core.info(`  ✓ Commented on PR #${pr.number}`);
+          core.info(`  ✓ Commented on PR #${pr.number} with "@dependabot ${mergeType}"`);
         } else {
-          core.info(`  ✓ [DRY RUN] Would comment on PR #${pr.number}`);
+          core.info(`  ✓ [DRY RUN] Would comment on PR #${pr.number} with "@dependabot ${mergeType}"`);
         }
       }
     }
