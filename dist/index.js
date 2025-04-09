@@ -31829,7 +31829,14 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(7484);
 const github = __nccwpck_require__(3228);
 
-(async () => {
+const commands = {
+  merge:  ["@dependabot merge"],
+  rebase: ["@dependabot rebase", "@dependabot merge"],
+  squash: ["@dependabot squash and merge"]
+
+}
+
+(async() => {
   try {
     // Get inputs
     const token = core.getInput('token', { required: true });
@@ -31841,7 +31848,7 @@ const github = __nccwpck_require__(3228);
 
     // Validate merge type
     const validMergeTypes = ['merge', 'rebase', 'squash'];
-    if (!validMergeTypes.includes(mergeType)) {
+    if(!validMergeTypes.includes(mergeType)) {
       throw new Error(`Invalid merge-type: ${mergeType}. Must be one of: ${validMergeTypes.join(', ')}`);
     }
 
@@ -31852,13 +31859,13 @@ const github = __nccwpck_require__(3228);
       ? ignoreRepositories.split(',').map(repo => repo.trim())
       : [];
 
-    if (ignoreRepos.length > 0) {
+    if(ignoreRepos.length > 0) {
       core.info(`Ignoring repositories: ${ignoreRepos.join(', ')}`);
     }
 
     // Get repositories to process
     let repos = [];
-    if (repositories) {
+    if(repositories) {
       repos = repositories.split(',').map(repo => repo.trim());
       core.info(`Processing specific repositories: ${repos.join(', ')}`);
     } else {
@@ -31866,7 +31873,7 @@ const github = __nccwpck_require__(3228);
       const response = await octokit.rest.repos.listForUser({
         username: repoOwner,
         per_page: 100
-      }).catch(async () => {
+      }).catch(async() => {
         // If user request fails, try as organization
         return await octokit.rest.repos.listForOrg({
           org: repoOwner,
@@ -31883,7 +31890,7 @@ const github = __nccwpck_require__(3228);
     core.info(`After filtering ignored repos, processing ${repos.length} repositories`);
 
     // Process each repository
-    for (const repo of repos) {
+    for(const repo of repos) {
       core.info(`Checking ${repoOwner}/${repo}...`);
 
       // Get open PRs by Dependabot
@@ -31897,24 +31904,24 @@ const github = __nccwpck_require__(3228);
       core.info(`Found ${dependabotPRs.length} open Dependabot PRs in ${repoOwner}/${repo}`);
 
       // Comment on each PR
-      for (const pr of dependabotPRs) {
+      for(const pr of dependabotPRs) {
         core.info(`→ PR #${pr.number}: ${pr.title}`);
 
-        if (!dryRun) {
+        if(!dryRun) {
           await octokit.rest.issues.createComment({
             owner: repoOwner,
             repo: repo,
             issue_number: pr.number,
-            body: `@dependabot ${mergeType}`
+            body: commands[mergeType].join("\n")
           });
-          core.info(`  ✓ Commented on PR #${pr.number} with "@dependabot ${mergeType}"`);
+          core.info(`  ✓ Commented on PR #${pr.number} with ${commands[mergeType].join(", ")}`);
         } else {
-          core.info(`  ✓ [DRY RUN] Would comment on PR #${pr.number} with "@dependabot ${mergeType}"`);
+          core.info(`  ✓ [DRY RUN] Would comment on PR #${pr.number} with "${commands[mergeType].join(", ")}"`);
         }
       }
     }
 
-  } catch (error) {
+  } catch(error) {
     core.setFailed(error.message);
   }
 })();
