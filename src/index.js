@@ -1,49 +1,49 @@
-const core = require('@actions/core')
-const github = require('@actions/github')
-const { execFile } = require('child_process')
-const util = require('util')
+import core from "@actions/core"
+import github from "@actions/github"
+import {execFile} from "node:child_process"
+import util from "node:util"
 
 const execFileAsync = util.promisify(execFile)
 
 const mergeFlags = {
-  merge: '--merge',
-  rebase: '--rebase',
-  squash: '--squash'
+  merge: "--merge",
+  rebase: "--rebase",
+  squash: "--squash"
 }
 
 ;(async() => {
 
   try {
     // Get inputs
-    const token = core.getInput('token', { required: true })
-    const repoOwner = core.getInput('repo-owner')
-    const repositories = core.getInput('repositories')
-    const ignoreRepositories = core.getInput('ignore-repositories')
-    const dryRun = core.getInput('dry-run').toLowerCase() === 'true'
-    const mergeType = core.getInput('merge-type') || 'merge'
+    const token = core.getInput("token", {required: true})
+    const repoOwner = core.getInput("repo-owner")
+    const repositories = core.getInput("repositories")
+    const ignoreRepositories = core.getInput("ignore-repositories")
+    const dryRun = core.getInput("dry-run").toLowerCase() === "true"
+    const mergeType = core.getInput("merge-type") || "merge"
 
     // Validate merge type
-    const validMergeTypes = ['merge', 'rebase', 'squash']
+    const validMergeTypes = ["merge", "rebase", "squash"]
     if(!validMergeTypes.includes(mergeType)) {
-      throw new Error(`Invalid merge-type: ${mergeType}. Must be one of: ${validMergeTypes.join(', ')}`)
+      throw new Error(`Invalid merge-type: ${mergeType}. Must be one of: ${validMergeTypes.join(", ")}`)
     }
 
     const octokit = github.getOctokit(token)
 
     // Parse repositories to ignore
     const ignoreRepos = ignoreRepositories
-      ? ignoreRepositories.split(',').map(repo => repo.trim())
+      ? ignoreRepositories.split(",").map(repo => repo.trim())
       : []
 
     if(ignoreRepos.length > 0) {
-      core.info(`Ignoring repositories: ${ignoreRepos.join(', ')}`)
+      core.info(`Ignoring repositories: ${ignoreRepos.join(", ")}`)
     }
 
     // Get repositories to process
     let repos = []
     if(repositories) {
-      repos = repositories.split(',').map(repo => repo.trim())
-      core.info(`Processing specific repositories: ${repos.join(', ')}`)
+      repos = repositories.split(",").map(repo => repo.trim())
+      core.info(`Processing specific repositories: ${repos.join(", ")}`)
     } else {
       core.info(`Fetching all repositories for ${repoOwner}...`)
       const response = await octokit.rest.repos.listForUser({
@@ -70,13 +70,13 @@ const mergeFlags = {
       core.info(`Checking ${repoOwner}/${repo}...`)
 
       // Get open PRs by Dependabot
-      const { data: prs } = await octokit.rest.pulls.list({
+      const {data: prs} = await octokit.rest.pulls.list({
         owner: repoOwner,
         repo: repo,
-        state: 'open'
+        state: "open"
       })
 
-      const dependabotPRs = prs.filter(pr => pr.user.login === 'dependabot[bot]')
+      const dependabotPRs = prs.filter(pr => pr.user.login === "dependabot[bot]")
       core.info(`Found ${dependabotPRs.length} open Dependabot PRs in ${repoOwner}/${repo}`)
 
       // Comment on each PR
@@ -85,16 +85,16 @@ const mergeFlags = {
 
         if(!dryRun) {
           const args = [
-            'pr',
-            'merge',
+            "pr",
+            "merge",
             pr.number.toString(),
-            '--repo',
+            "--repo",
             `${repoOwner}/${repo}`,
             mergeFlags[mergeType],
-            '--auto'
+            "--auto"
           ]
 
-          const { stdout, stderr } = await execFileAsync('gh', args, {
+          const {stdout, stderr} = await execFileAsync("gh", args, {
             env: {
               ...process.env,
               GH_TOKEN: token,
@@ -105,6 +105,7 @@ const mergeFlags = {
           if(stdout) {
             core.info(stdout.trim())
           }
+
           if(stderr) {
             core.info(stderr.trim())
           }

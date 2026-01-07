@@ -4,8 +4,15 @@
   "description": "GitHub Action to automatically enable auto-merge on open Dependabot PRs",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js -o dist"
+    "build": "ncc build index.js -o dist",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "update": "pnpm self-update && pnpx npm-check-updates -u && pnpm install",
+    "patch": "pnpm version patch",
+    "minor": "pnpm version minor",
+    "major": "pnpm version major"
   },
+  "packageManager": "pnpm@10.27.0",
   "keywords": [
     "github",
     "action",
@@ -17,12 +24,14 @@
   },
   "author": "gesslar",
   "license": "Unlicense",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.0"
+    "@actions/core": "^2.0.1",
+    "@actions/github": "^6.0.1"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.3"
+    "@gesslar/uglier": "^1.0.0",
+    "@vercel/ncc": "^0.38.4",
+    "eslint": "^9.39.2"
   }
 }
