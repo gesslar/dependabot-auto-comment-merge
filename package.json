@@ -12,6 +12,9 @@
     "dependabot",
     "automation"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "author": "gesslar",
   "license": "Unlicense",
   "type": "commonjs",
