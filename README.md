@@ -1,6 +1,6 @@
-# Dependabot Auto Comment Merge
+# Dependabot Auto Merge
 
-A GitHub Action that automatically comments `@dependabot merge` on open Dependabot PRs to trigger auto-merging.
+A GitHub Action that automatically enables auto-merge on open Dependabot PRs using the GitHub CLI.
 
 ## Usage
 
@@ -16,10 +16,10 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Auto Comment Dependabot PRs
+      - name: Auto-merge Dependabot PRs
         uses: gesslar/dependabot-auto-comment-merge@main
         with:
-          # GitHub token with permissions to comment on PRs
+          # GitHub token with permissions to merge PRs
           # For organization-wide access, use a personal access token
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,7 +41,7 @@ jobs:
           # Default: false
           dry-run: ${{ vars.DEPENDABOT_DRY_RUN }}
 
-          # Merge type - controls which merge command is used: merge, rebase, or squash
+          # Merge type - controls which merge strategy is used: merge, rebase, or squash
           # Default: merge
           merge-type: merge
 ```
@@ -50,12 +50,12 @@ jobs:
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `token` | GitHub token with permissions to comment on PRs. For accessing repositories across an organization, use a personal access token with appropriate permissions. | Yes | N/A |
+| `token` | GitHub token with permissions to merge PRs (for example, `contents: write` and `pull-requests: write`). For accessing repositories across an organization, use a personal access token with appropriate permissions. | Yes | N/A |
 | `repo-owner` | Repository owner (can be a username or organization name). Used to determine which repositories to scan for Dependabot PRs. | No | `${{ github.repository_owner }}` |
 | `repositories` | Comma-separated list of repositories to check for Dependabot PRs. If not provided, all repositories of the owner will be checked. | No | All repos of owner |
 | `ignore-repositories` | Comma-separated list of repositories to ignore. Useful when checking all repos but wanting to exclude a few. | No | None |
-| `dry-run` | If set to "true", the action will log what it would do without actually posting comments. Useful for testing. | No | `false` |
-| `merge-type` | Specifies the merge command to use when commenting on Dependabot PRs. Valid values are: `merge`, `rebase`, or `squash`. | No | `merge` |
+| `dry-run` | If set to "true", the action will log what it would do without actually merging. Useful for testing. | No | `false` |
+| `merge-type` | Specifies the merge strategy to use when enabling auto-merge for Dependabot PRs. Valid values are: `merge`, `rebase`, or `squash`. | No | `merge` |
 
 ## License
 

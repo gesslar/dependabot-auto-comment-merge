@@ -1,10 +1,14 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
+const { execFile } = require('child_process')
+const util = require('util')
 
-const commands = {
-  merge: ["@dependabot merge"],
-  rebase: ["@dependabot rebase", "@dependabot merge"],
-  squash: ["@dependabot squash and merge"]
+const execFileAsync = util.promisify(execFile)
+
+const mergeFlags = {
+  merge: '--merge',
+  rebase: '--rebase',
+  squash: '--squash'
 }
 
 ;(async() => {
@@ -80,15 +84,34 @@ const commands = {
         core.info(`→ PR #${pr.number}: ${pr.title}`)
 
         if(!dryRun) {
-          await octokit.rest.issues.createComment({
-            owner: repoOwner,
-            repo: repo,
-            issue_number: pr.number,
-            body: commands[mergeType].join("\n")
+          const args = [
+            'pr',
+            'merge',
+            pr.number.toString(),
+            '--repo',
+            `${repoOwner}/${repo}`,
+            mergeFlags[mergeType],
+            '--auto'
+          ]
+
+          const { stdout, stderr } = await execFileAsync('gh', args, {
+            env: {
+              ...process.env,
+              GH_TOKEN: token,
+              GITHUB_TOKEN: token
+            }
           })
-          core.info(`  ✓ Commented on PR #${pr.number} with ${commands[mergeType].join(", ")}`)
+
+          if(stdout) {
+            core.info(stdout.trim())
+          }
+          if(stderr) {
+            core.info(stderr.trim())
+          }
+
+          core.info(`  ✓ Triggered auto-merge on PR #${pr.number} with ${mergeType}`)
         } else {
-          core.info(`  ✓ [DRY RUN] Would comment on PR #${pr.number} with "${commands[mergeType].join(", ")}"`)
+          core.info(`  ✓ [DRY RUN] Would run: gh pr merge ${pr.number} --repo ${repoOwner}/${repo} ${mergeFlags[mergeType]} --auto`)
         }
       }
     }
