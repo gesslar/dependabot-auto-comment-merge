@@ -1,36 +1,36 @@
-name: 'Dependabot Auto Merge'
-description: 'Automatically enables auto-merge on open Dependabot PRs'
-author: 'gesslar'
+name: "Dependabot Auto Merge"
+description: "Automatically enables auto-merge on open Dependabot PRs"
+author: "gesslar"
 
 inputs:
   token:
-    description: 'GitHub token with permissions to merge PRs'
+    description: "GitHub token with permissions to merge PRs"
     required: true
   repo-owner:
-    description: 'Repository owner (can be an organization)'
+    description: "Repository owner (can be an organization)"
     required: false
     default: ${{ github.repository_owner }}
   repositories:
-    description: 'Comma-separated list of repositories to check. If empty, all repos of the owner will be checked.'
+    description: "Comma-separated list of repositories to check. If empty, all repos of the owner will be checked."
     required: false
-    default: ''
+    default: ""
   ignore-repositories:
-    description: 'Comma-separated list of repositories to ignore. Useful when checking all repos but wanting to exclude a few.'
+    description: "Comma-separated list of repositories to ignore. Useful when checking all repos but wanting to exclude a few."
     required: false
-    default: ''
+    default: ""
   dry-run:
-    description: 'If true, will not actually merge PRs'
+    description: "If true, will not actually merge PRs"
     required: false
-    default: 'false'
+    default: "false"
   merge-type:
-    description: 'The merge command to use: merge, rebase, or squash'
+    description: "The merge command to use: merge, rebase, or squash"
     required: false
-    default: 'merge'
+    default: "merge"
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
 
 branding:
-  icon: 'git-pull-request'
-  color: 'green'
+  icon: "git-pull-request"
+  color: "green"
